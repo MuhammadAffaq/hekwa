@@ -1,0 +1,155 @@
+import { createContext, useContext, useEffect, useState, type ReactNode } from "react";
+
+export type Lang = "en" | "fr";
+
+const en = {
+  nav: ["Home", "Discover", "How It Works", "Features", "About"],
+  explore: "Explore Properties",
+  heroEyebrow: "WELCOME TO HEKWA",
+  heroTitle: ["Search.", "See.", "Love."],
+  heroSub: "Discover places that feel right, before you even step inside.",
+  heroPara: "HEKWA makes it easier to discover, explore, and find properties that match the way you want to live.",
+  discoverHekwa: "Discover HEKWA",
+  save: "Save",
+  saved: "Saved",
+  villa: "Modern 3 Bedroom Villa",
+  brandEyebrow: "THE HEKWA EXPERIENCE",
+  brandTitle: "Finding a property should feel exciting — not overwhelming.",
+  brandText: "HEKWA brings property discovery into one beautifully simple experience, helping you search, explore and save the places that feel right.",
+  discEyebrow: "DISCOVER",
+  discTitle: "Your next place is waiting to be discovered.",
+  discText: "Explore properties with the information you need to make your search easier and more enjoyable.",
+  beds: "Beds", baths: "Baths",
+  types: { villa: "Villa", apartment: "Apartment", home: "Home" },
+  appEyebrow: "THE HEKWA APP",
+  appTitle: "Everything you need to find your next place.",
+  appText: "Search, explore, save and discover — all from one simple experience.",
+  stages: [
+    { k: "Search", t: "Start with what you're looking for.", d: "Search properties by location, type, price and other preferences." },
+    { k: "Explore", t: "Explore properties that catch your eye.", d: "Browse images, locations, prices and key information at a glance." },
+    { k: "Details", t: "See the details that matter.", d: "Price, location, amenities and everything in between." },
+    { k: "Save", t: "Keep your favorites close.", d: "Save the places you love and come back anytime." },
+    { k: "Decide", t: "Find the one that feels right.", d: "Everything you need, in one complete experience." },
+  ],
+  searchPh: "Search city or area",
+  filters: ["Villa", "Apartment", "For Sale", "For Rent"],
+  amenities: ["Pool", "Garden", "Parking", "Security"],
+  favorites: "Favorites",
+  fitEyebrow: "FIND YOUR FIT",
+  fitTitle: "A property for every kind of life.",
+  cats: ["Apartments", "Homes", "Villas", "Commercial", "For Rent", "For Sale"],
+  rbTitle: "Rent it. Buy it. Love it.",
+  rent: "Rent", buy: "Buy",
+  rentText: "Find a place that fits your life today.",
+  rentCta: "Explore Rentals",
+  buyText: "Discover a place you can call your own.",
+  detEyebrow: "SEE MORE",
+  detTitle: "Because the details matter.",
+  detDesc: "A light-filled residence with open living spaces, floor-to-ceiling glass and calm, considered finishes throughout.",
+  whyEyebrow: "WHY HEKWA",
+  whyTitle: "A better way to search for where you'll live.",
+  why: [
+    { k: "Discover", t: "Explore properties in one place." },
+    { k: "Explore", t: "See the details before making a decision." },
+    { k: "Save", t: "Keep properties you're interested in close." },
+    { k: "Decide", t: "Move forward with confidence." },
+  ],
+  cineTitle: "Your next chapter starts with a place.",
+  ctaTitle: "Ready to find your place?",
+  ctaText: "Start exploring properties with HEKWA.",
+  getStarted: "Get Started",
+  footDesc: "A simpler way to discover the place that's right for you.",
+  footCols: [
+    { h: "Explore", l: ["Properties", "Rent", "Buy", "Favorites"] },
+    { h: "Company", l: ["About", "How It Works", "Contact"] },
+    { h: "Legal", l: ["Privacy Policy", "Terms & Conditions"] },
+  ],
+  rights: "© 2026 HEKWA. All rights reserved.",
+  sample: "Sample listings for illustration",
+  menu: "Menu",
+};
+
+type Dict = typeof en;
+
+const fr: Dict = {
+  nav: ["Accueil", "Découvrir", "Comment ça marche", "Fonctionnalités", "À propos"],
+  explore: "Explorer les propriétés",
+  heroEyebrow: "BIENVENUE CHEZ HEKWA",
+  heroTitle: ["Cherchez.", "Voyez.", "Aimez."],
+  heroSub: "Découvrez des lieux qui vous correspondent, avant même d'y entrer.",
+  heroPara: "HEKWA vous permet de découvrir, d'explorer et de trouver plus facilement des propriétés qui correspondent à votre façon de vivre.",
+  discoverHekwa: "Découvrir HEKWA",
+  save: "Sauvegarder",
+  saved: "Sauvegardé",
+  villa: "Villa moderne 3 chambres",
+  brandEyebrow: "L'EXPÉRIENCE HEKWA",
+  brandTitle: "Trouver une propriété devrait être une expérience agréable, pas compliquée.",
+  brandText: "HEKWA réunit la recherche immobilière dans une expérience simple et élégante, pour vous aider à rechercher, explorer et sauvegarder les lieux qui vous correspondent.",
+  discEyebrow: "DÉCOUVRIR",
+  discTitle: "Votre prochain chez-vous n'attend que vous.",
+  discText: "Explorez des propriétés avec toutes les informations nécessaires pour rendre votre recherche plus simple et agréable.",
+  beds: "Ch.", baths: "SdB",
+  types: { villa: "Villa", apartment: "Appartement", home: "Maison" },
+  appEyebrow: "L'APPLICATION HEKWA",
+  appTitle: "Tout ce qu'il vous faut pour trouver votre prochain chez-vous.",
+  appText: "Recherchez, explorez, sauvegardez et découvrez — le tout dans une expérience simple.",
+  stages: [
+    { k: "Rechercher", t: "Commencez par ce que vous recherchez.", d: "Recherchez des propriétés par lieu, type, prix et selon vos préférences." },
+    { k: "Explorer", t: "Explorez les propriétés qui attirent votre attention.", d: "Parcourez images, lieux, prix et informations clés en un coup d'œil." },
+    { k: "Détails", t: "Découvrez les détails qui comptent.", d: "Prix, emplacement, équipements et tout ce qui compte." },
+    { k: "Sauvegarder", t: "Gardez vos favoris à portée de main.", d: "Sauvegardez les lieux que vous aimez et revenez quand vous voulez." },
+    { k: "Décider", t: "Trouvez celle qui vous correspond.", d: "Tout ce qu'il vous faut, dans une expérience complète." },
+  ],
+  searchPh: "Rechercher une ville ou un quartier",
+  filters: ["Villa", "Appartement", "À vendre", "À louer"],
+  amenities: ["Piscine", "Jardin", "Parking", "Sécurité"],
+  favorites: "Favoris",
+  fitEyebrow: "TROUVEZ VOTRE LIEU IDÉAL",
+  fitTitle: "Une propriété pour chaque façon de vivre.",
+  cats: ["Appartements", "Maisons", "Villas", "Commercial", "À louer", "À vendre"],
+  rbTitle: "Louez. Achetez. Aimez.",
+  rent: "Louer", buy: "Acheter",
+  rentText: "Trouvez un lieu qui correspond à votre vie aujourd'hui.",
+  rentCta: "Explorer les locations",
+  buyText: "Découvrez un lieu que vous pourrez appeler chez vous.",
+  detEyebrow: "EN VOIR PLUS",
+  detTitle: "Parce que chaque détail compte.",
+  detDesc: "Une résidence baignée de lumière, aux espaces de vie ouverts, aux grandes baies vitrées et aux finitions soignées.",
+  whyEyebrow: "POURQUOI HEKWA",
+  whyTitle: "Une meilleure façon de trouver votre prochain chez-vous.",
+  why: [
+    { k: "Découvrir", t: "Explorez des propriétés au même endroit." },
+    { k: "Explorer", t: "Découvrez les détails avant de prendre une décision." },
+    { k: "Sauvegarder", t: "Gardez vos propriétés préférées à portée de main." },
+    { k: "Décider", t: "Avancez en toute confiance." },
+  ],
+  cineTitle: "Votre prochain chapitre commence par un lieu.",
+  ctaTitle: "Prêt à trouver votre prochain chez-vous ?",
+  ctaText: "Commencez à explorer des propriétés avec HEKWA.",
+  getStarted: "Commencer",
+  footDesc: "Une façon plus simple de découvrir le lieu qui vous correspond.",
+  footCols: [
+    { h: "Explorer", l: ["Propriétés", "Location", "Achat", "Favoris"] },
+    { h: "Entreprise", l: ["À propos", "Comment ça marche", "Contact"] },
+    { h: "Légal", l: ["Politique de confidentialité", "Conditions générales"] },
+  ],
+  rights: "© 2026 HEKWA. Tous droits réservés.",
+  sample: "Annonces fictives à titre d'illustration",
+  menu: "Menu",
+};
+
+const dicts = { en, fr };
+const Ctx = createContext<{ lang: Lang; t: Dict; setLang: (l: Lang) => void }>({ lang: "en", t: en, setLang: () => {} });
+
+export function LangProvider({ children }: { children: ReactNode }) {
+  const [lang, setLangState] = useState<Lang>("en");
+  useEffect(() => {
+    const s = localStorage.getItem("hekwa-lang");
+    if (s === "fr" || s === "en") setLangState(s);
+  }, []);
+  useEffect(() => { document.documentElement.lang = lang; }, [lang]);
+  const setLang = (l: Lang) => { localStorage.setItem("hekwa-lang", l); setLangState(l); };
+  return <Ctx.Provider value={{ lang, t: dicts[lang], setLang }}>{children}</Ctx.Provider>;
+}
+
+export const useLang = () => useContext(Ctx);
