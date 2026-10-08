@@ -3,7 +3,7 @@ import { useEffect, useRef, useState, type ReactNode } from "react";
 import { AnimatePresence, motion, useScroll, useTransform, type MotionValue } from "framer-motion";
 import {
   Heart, MapPin, BedDouble, Bath, Maximize, Search, SlidersHorizontal, ArrowRight, Menu, X,
-  Compass, Eye, Bookmark, CheckCircle2, Building2, Home, Castle, Store, Key, Tag,
+  Compass, Eye, Bookmark, CheckCircle2, Bell, Globe, Apple, Play,
 } from "lucide-react";
 import { LangProvider, useLang, type Lang } from "@/lib/i18n";
 import logo from "@/assets/hekwa-logo.png.asset.json";
@@ -15,8 +15,8 @@ import cineImg from "@/assets/cinematic.jpg";
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "HEKWA — Search. See. Love. | Discover your next property" },
-      { name: "description", content: "HEKWA makes it easier to discover, explore and find properties that match the way you want to live." },
+      { title: "HEKWA — Search. See. Love. | The property app" },
+      { name: "description", content: "Meet the HEKWA app: search, explore, save and decide on your next place — all in one simple experience." },
       { property: "og:title", content: "HEKWA — Search. See. Love." },
       { property: "og:description", content: "Discover places that feel right, before you even step inside." },
       { property: "og:type", content: "website" },
@@ -32,7 +32,7 @@ export const Route = createFileRoute("/")({
 
 const ease = [0.22, 1, 0.36, 1] as const;
 
-const properties = [
+const _unused = [
   { img: heroImg, type: "villa" as const, title: "Modern Villa", loc: "Lahore, Pakistan", price: "PKR 45,000,000", beds: 3, baths: 4, area: "4,500 sqft" },
   { img: interiorImg, type: "apartment" as const, title: "Skyline Apartment", loc: "Karachi, Pakistan", price: "PKR 28,500,000", beds: 2, baths: 2, area: "1,850 sqft" },
   { img: homeImg, type: "home" as const, title: "Garden Family Home", loc: "Islamabad, Pakistan", price: "PKR 36,000,000", beds: 4, baths: 3, area: "3,200 sqft" },
@@ -47,12 +47,10 @@ function Page() {
         <motion.main key={lang} initial={{ opacity: 0.4 }} animate={{ opacity: 1 }} transition={{ duration: 0.5, ease }}>
           <Hero />
           <Brand />
-          <Discover />
           <AppShowcase />
-          <Fit />
-          <RentBuy />
-          <Details />
+          <FeatureGrid />
           <Why />
+          <Download />
           <Cinematic />
           <FinalCta />
         </motion.main>
@@ -114,7 +112,7 @@ function Header() {
     on(); window.addEventListener("scroll", on, { passive: true });
     return () => window.removeEventListener("scroll", on);
   }, []);
-  const ids = ["home", "discover", "how", "features", "about"];
+  const ids = ["home", "how", "features", "about", "download"];
   return (
     <motion.header initial={{ y: -40, opacity: 0 }} animate={{ y: 0, opacity: 1 }} transition={{ duration: 1, delay: 0.3, ease }}
       className="fixed inset-x-0 top-0 z-50 px-3 pt-3 md:px-6 md:pt-5">
@@ -127,7 +125,7 @@ function Header() {
         </nav>
         <div className="flex items-center gap-3">
           <LangToggle />
-          <a href="#discover" className="btn-primary hidden rounded-full px-5 py-2.5 text-sm font-semibold md:inline-flex">{t.explore}</a>
+          <a href="#download" className="btn-primary hidden rounded-full px-5 py-2.5 text-sm font-semibold md:inline-flex">{t.explore}</a>
           <button className="rounded-full p-2 lg:hidden" onClick={() => setOpen(!open)} aria-label={t.menu} aria-expanded={open}>
             {open ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
           </button>
@@ -142,7 +140,7 @@ function Header() {
                 <a key={n} href={`#${ids[i]}`} onClick={() => setOpen(false)} className="rounded-xl px-3 py-3 text-2xl font-semibold tracking-tight hover:bg-muted">{n}</a>
               ))}
             </nav>
-            <a href="#discover" onClick={() => setOpen(false)} className="btn-primary mt-4 flex justify-center rounded-full px-5 py-3 font-semibold">{t.explore}</a>
+            <a href="#download" onClick={() => setOpen(false)} className="btn-primary mt-4 flex justify-center rounded-full px-5 py-3 font-semibold">{t.explore}</a>
           </motion.div>
         )}
       </AnimatePresence>
@@ -194,8 +192,8 @@ function Hero() {
             className="mt-4 max-w-md text-base leading-relaxed text-muted-foreground">{t.heroPara}</motion.p>
           <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 1, delay: 1.6, ease }}
             className="mt-10 flex flex-wrap gap-3">
-            <a href="#discover" className="btn-primary inline-flex items-center gap-2 rounded-full px-7 py-4 font-semibold">{t.explore} <ArrowRight className="h-4 w-4" /></a>
-            <a href="#how" className="btn-secondary inline-flex items-center rounded-full px-7 py-4 font-semibold">{t.discoverHekwa}</a>
+            <a href="#download" className="btn-primary inline-flex items-center gap-2 rounded-full px-7 py-4 font-semibold">{t.explore} <ArrowRight className="h-4 w-4" /></a>
+            <a href="#features" className="btn-secondary inline-flex items-center rounded-full px-7 py-4 font-semibold">{t.discoverHekwa}</a>
           </motion.div>
         </div>
 
@@ -211,18 +209,16 @@ function Hero() {
               className="glass rounded-3xl p-5">
               <div className="flex items-start justify-between gap-3">
                 <div>
-                  <p className="text-xs font-semibold text-primary">{t.types.villa}</p>
-                  <p className="mt-1 text-lg font-semibold leading-tight">{t.villa}</p>
-                  <p className="mt-1 flex items-center gap-1 text-sm text-muted-foreground"><MapPin className="h-3.5 w-3.5" /> Lahore, Pakistan</p>
+                  <p className="text-xs font-semibold text-primary">{t.heroCardTag}</p>
+                  <p className="mt-1 text-lg font-semibold leading-tight">{t.heroCardTitle}</p>
+                  <p className="mt-1 text-sm text-muted-foreground">{t.heroCardText}</p>
                 </div>
                 <SaveButton />
               </div>
-              <div className="mt-4 flex items-center justify-between border-t border-border/70 pt-4">
-                <p className="text-lg font-bold tracking-tight">PKR 45,000,000</p>
-                <div className="flex gap-3 text-xs text-muted-foreground">
-                  <span className="flex items-center gap-1"><BedDouble className="h-3.5 w-3.5" />3</span>
-                  <span className="flex items-center gap-1"><Bath className="h-3.5 w-3.5" />4</span>
-                </div>
+              <div className="mt-4 flex items-center gap-4 border-t border-border/70 pt-4 text-xs font-semibold text-muted-foreground">
+                <span className="flex items-center gap-1"><Search className="h-3.5 w-3.5 text-primary" />{t.stages[0]!.k}</span>
+                <span className="flex items-center gap-1"><Eye className="h-3.5 w-3.5 text-primary" />{t.stages[1]!.k}</span>
+                <span className="flex items-center gap-1"><Bookmark className="h-3.5 w-3.5 text-primary" />{t.stages[3]!.k}</span>
               </div>
             </motion.div>
           </motion.div>
@@ -256,52 +252,6 @@ function Brand() {
           <motion.img style={{ y }} src={interiorImg} alt="Bright living room with city views" loading="lazy" width={1408} height={1008}
             className="absolute inset-0 h-[120%] w-full -translate-y-[8%] object-cover" />
         </div>
-      </div>
-    </section>
-  );
-}
-
-/* ---------------- Discover ---------------- */
-function PropertyCard({ p }: { p: (typeof properties)[number] }) {
-  const { t } = useLang();
-  return (
-    <motion.article whileHover={{ y: -6 }} transition={{ duration: 0.4, ease }}
-      className="group w-[82vw] shrink-0 snap-center overflow-hidden rounded-3xl border border-border/70 bg-card transition-shadow duration-500 hover:shadow-float sm:w-[60vw] md:w-auto">
-      <div className="relative aspect-[4/3] overflow-hidden">
-        <img src={p.img} alt={p.title} loading="lazy" className="h-full w-full object-cover transition-transform duration-[1.2s] ease-out group-hover:scale-105" />
-        <span className="glass absolute left-4 top-4 rounded-full px-3 py-1 text-xs font-semibold">{t.types[p.type]}</span>
-        <div className="absolute right-4 top-4"><SaveButton /></div>
-      </div>
-      <div className="p-6">
-        <h3 className="text-xl font-semibold tracking-tight">{p.title}</h3>
-        <p className="mt-1 flex items-center gap-1 text-sm text-muted-foreground"><MapPin className="h-3.5 w-3.5" />{p.loc}</p>
-        <p className="mt-4 text-2xl font-bold tracking-tight text-primary">{p.price}</p>
-        <div className="mt-5 flex gap-5 border-t border-border/70 pt-4 text-sm text-muted-foreground">
-          <span className="flex items-center gap-1.5"><BedDouble className="h-4 w-4" />{p.beds} {t.beds}</span>
-          <span className="flex items-center gap-1.5"><Bath className="h-4 w-4" />{p.baths} {t.baths}</span>
-          <span className="flex items-center gap-1.5"><Maximize className="h-4 w-4" />{p.area}</span>
-        </div>
-      </div>
-    </motion.article>
-  );
-}
-
-function Discover() {
-  const { t } = useLang();
-  return (
-    <section id="discover" className="bg-secondary/60 py-28 md:py-36">
-      <div className="mx-auto max-w-7xl px-5 md:px-8">
-        <Reveal className="max-w-3xl">
-          <Eyebrow>{t.discEyebrow}</Eyebrow>
-          <h2 className={h2}>{t.discTitle}</h2>
-          <p className="mt-6 max-w-xl text-lg text-muted-foreground">{t.discText}</p>
-        </Reveal>
-        <div className="no-scrollbar -mx-5 mt-16 flex snap-x snap-mandatory gap-5 overflow-x-auto px-5 pb-4 md:mx-0 md:grid md:grid-cols-3 md:overflow-visible md:px-0">
-          {properties.map((p, i) => (
-            <Reveal key={p.title} delay={i * 0.12} className="contents md:block"><PropertyCard p={p} /></Reveal>
-          ))}
-        </div>
-        <p className="mt-6 text-xs text-muted-foreground">{t.sample}</p>
       </div>
     </section>
   );
@@ -454,106 +404,67 @@ function AppShowcase() {
   );
 }
 
-/* ---------------- Fit ---------------- */
-function Fit() {
+/* ---------------- Feature grid ---------------- */
+function FeatureGrid() {
   const { t } = useLang();
-  const icons = [Building2, Home, Castle, Store, Key, Tag];
+  const icons = [Search, SlidersHorizontal, MapPin, Heart, Bell, Globe];
   return (
-    <section className="py-28 md:py-36">
-      <div className="mx-auto grid max-w-7xl gap-14 px-5 md:px-8 lg:grid-cols-2 lg:items-center">
-        <Reveal className="overflow-hidden rounded-[2rem] shadow-float">
-          <img src={homeImg} alt="Modern family home with garden" loading="lazy" width={1200} height={1008} className="aspect-[4/5] w-full object-cover" />
-        </Reveal>
-        <Reveal delay={0.1}>
-          <Eyebrow>{t.fitEyebrow}</Eyebrow>
-          <h2 className={h2}>{t.fitTitle}</h2>
-          <div className="mt-10 grid grid-cols-2 gap-3">
-            {t.cats.map((c, i) => {
-              const I = icons[i]!;
-              return (
-                <a key={c} href="#discover" className="group flex items-center gap-3 rounded-2xl border border-border bg-card p-4 transition-all duration-500 hover:-translate-y-1 hover:border-primary hover:shadow-soft">
-                  <span className="grid h-10 w-10 place-items-center rounded-xl bg-primary-soft text-primary transition-colors group-hover:bg-primary group-hover:text-primary-foreground"><I className="h-5 w-5" /></span>
-                  <span className="font-semibold">{c}</span>
-                </a>
-              );
-            })}
-          </div>
-        </Reveal>
-      </div>
-    </section>
-  );
-}
-
-/* ---------------- Rent / Buy ---------------- */
-function RentBuy() {
-  const { t } = useLang();
-  const cards = [
-    { k: t.rent, text: t.rentText, cta: t.rentCta, img: interiorImg },
-    { k: t.buy, text: t.buyText, cta: t.explore, img: heroImg },
-  ];
-  return (
-    <section className="pb-28 md:pb-36">
+    <section className="bg-secondary/60 py-28 md:py-36">
       <div className="mx-auto max-w-7xl px-5 md:px-8">
-        <Reveal><h2 className={`${h2} text-center`}>{t.rbTitle}</h2></Reveal>
-        <div className="mt-14 grid gap-5 md:grid-cols-2">
-          {cards.map((c, i) => (
-            <Reveal key={c.k} delay={i * 0.12}>
-              <a href="#discover" className="group relative block aspect-[4/5] overflow-hidden rounded-[2rem] sm:aspect-[5/4]">
-                <img src={c.img} alt="" loading="lazy" className="absolute inset-0 h-full w-full object-cover transition-transform duration-[1.4s] ease-out group-hover:scale-105" />
-                <div className="absolute inset-0 bg-gradient-to-t from-navy/85 via-navy/20 to-transparent" />
-                <div className="absolute inset-x-0 bottom-0 p-8 text-navy-foreground">
-                  <p className="text-sm font-semibold tracking-[0.2em] text-primary-soft">{c.k.toUpperCase()}</p>
-                  <p className="mt-3 max-w-sm text-2xl font-semibold leading-tight md:text-3xl">{c.text}</p>
-                  <span className="glass-dark mt-6 inline-flex items-center gap-2 rounded-full px-5 py-3 text-sm font-semibold transition-all group-hover:gap-3">{c.cta} <ArrowRight className="h-4 w-4" /></span>
+        <Reveal className="max-w-3xl">
+          <Eyebrow>{t.featEyebrow}</Eyebrow>
+          <h2 className={h2}>{t.featTitle}</h2>
+          <p className="mt-6 max-w-xl text-lg text-muted-foreground">{t.featText}</p>
+        </Reveal>
+        <div className="mt-16 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+          {t.feats.map((f, i) => {
+            const I = icons[i]!;
+            return (
+              <Reveal key={f.t} delay={(i % 3) * 0.1}>
+                <div className="group h-full rounded-3xl border border-border bg-card p-7 transition-all duration-500 hover:-translate-y-1 hover:border-primary hover:shadow-soft">
+                  <span className="grid h-12 w-12 place-items-center rounded-2xl bg-primary-soft text-primary transition-colors group-hover:bg-primary group-hover:text-primary-foreground"><I className="h-6 w-6" /></span>
+                  <p className="mt-8 text-xl font-semibold leading-snug">{f.t}</p>
+                  <p className="mt-3 text-muted-foreground">{f.d}</p>
                 </div>
-              </a>
-            </Reveal>
-          ))}
+              </Reveal>
+            );
+          })}
         </div>
       </div>
     </section>
   );
 }
 
-/* ---------------- Details ---------------- */
-function Details() {
+/* ---------------- Download ---------------- */
+function Download() {
   const { t } = useLang();
-  const ref = useRef<HTMLDivElement>(null);
-  const { scrollYProgress } = useScroll({ target: ref, offset: ["start end", "end start"] });
-  const y1 = useTransform(scrollYProgress, [0, 1], [80, -80]);
-  const y2 = useTransform(scrollYProgress, [0, 1], [120, -40]);
   return (
-    <section ref={ref} className="bg-secondary/60 py-28 md:py-36">
-      <div className="mx-auto max-w-7xl px-5 md:px-8">
-        <Reveal className="max-w-2xl">
-          <Eyebrow>{t.detEyebrow}</Eyebrow>
-          <h2 className={h2}>{t.detTitle}</h2>
-        </Reveal>
-        <div className="relative mt-16">
-          <div className="overflow-hidden rounded-[2rem] shadow-float">
-            <img src={interiorImg} alt="Living room interior detail" loading="lazy" className="aspect-[4/5] w-full object-cover sm:aspect-[16/9]" />
+    <section id="download" className="pb-28 md:pb-36">
+      <div className="mx-auto grid max-w-7xl gap-14 px-5 md:px-8 lg:grid-cols-2 lg:items-center">
+        <Reveal>
+          <Eyebrow>{t.dlEyebrow}</Eyebrow>
+          <h2 className={h2}>{t.dlTitle}</h2>
+          <p className="mt-6 max-w-lg text-lg text-muted-foreground">{t.dlText}</p>
+          <div className="mt-10 flex flex-wrap gap-3">
+            <StoreButton icon={<Apple className="h-6 w-6" />} small={t.dlIos} big="App Store" />
+            <StoreButton icon={<Play className="h-6 w-6" />} small={t.dlAndroid} big="Google Play" />
           </div>
-          <motion.div style={{ y: y1 }} className="glass relative mx-3 -mt-24 rounded-3xl p-6 sm:absolute sm:bottom-10 sm:left-10 sm:mx-0 sm:mt-0 sm:w-96">
-            <div className="flex items-start justify-between">
-              <div>
-                <p className="text-xs font-semibold text-primary">{t.types.apartment}</p>
-                <p className="mt-1 text-xl font-semibold">Skyline Apartment</p>
-                <p className="mt-1 flex items-center gap-1 text-sm text-muted-foreground"><MapPin className="h-3.5 w-3.5" />Karachi, Pakistan</p>
-              </div>
-              <SaveButton />
-            </div>
-            <p className="mt-4 text-sm leading-relaxed text-muted-foreground">{t.detDesc}</p>
-            <p className="mt-4 text-2xl font-bold tracking-tight">PKR 28,500,000</p>
-          </motion.div>
-          <motion.div style={{ y: y2 }} className="glass absolute right-10 top-10 hidden gap-6 rounded-2xl px-6 py-4 md:flex">
-            {[[BedDouble, `2 ${t.beds}`], [Bath, `2 ${t.baths}`], [Maximize, "1,850 sqft"]].map(([I, l], i) => {
-              const Icon = I as typeof Bath;
-              return <div key={i} className="flex items-center gap-2 text-sm font-semibold"><Icon className="h-4 w-4 text-primary" />{l as string}</div>;
-            })}
-          </motion.div>
-        </div>
+          <p className="mt-4 text-xs text-muted-foreground">{t.dlSoon}</p>
+        </Reveal>
+        <Reveal delay={0.1} className="overflow-hidden rounded-[2rem] shadow-float">
+          <img src={interiorImg} alt="Bright living room seen through the HEKWA app" loading="lazy" width={1408} height={1008} className="aspect-[4/3] w-full object-cover" />
+        </Reveal>
       </div>
     </section>
+  );
+}
+
+function StoreButton({ icon, small, big }: { icon: ReactNode; small: string; big: string }) {
+  return (
+    <a href="#download" className="inline-flex items-center gap-3 rounded-2xl bg-foreground px-5 py-3 text-background transition-transform duration-500 hover:-translate-y-0.5">
+      {icon}
+      <span className="text-left leading-tight"><span className="block text-[11px] opacity-75">{small}</span><span className="block text-lg font-semibold">{big}</span></span>
+    </a>
   );
 }
 
@@ -602,7 +513,7 @@ function Cinematic() {
       <motion.div style={{ y }} className="relative flex h-full flex-col items-center justify-center px-5 text-center text-navy-foreground">
         <p className="text-sm font-semibold tracking-[0.3em] text-primary-soft">SEARCH. SEE. LOVE.</p>
         <h2 className="mt-6 max-w-4xl text-[2.5rem] font-semibold leading-[1.02] tracking-tight md:text-7xl">{t.cineTitle}</h2>
-        <a href="#discover" className="btn-primary mt-10 inline-flex items-center gap-2 rounded-full px-7 py-4 font-semibold">{t.explore} <ArrowRight className="h-4 w-4" /></a>
+        <a href="#download" className="btn-primary mt-10 inline-flex items-center gap-2 rounded-full px-7 py-4 font-semibold">{t.explore} <ArrowRight className="h-4 w-4" /></a>
       </motion.div>
     </section>
   );
@@ -619,7 +530,7 @@ function FinalCta() {
           <h2 className="mx-auto max-w-3xl text-[2.25rem] font-semibold leading-[1.05] tracking-tight md:text-6xl">{t.ctaTitle}</h2>
           <p className="mt-6 text-lg opacity-85">{t.ctaText}</p>
           <div className="mt-10 flex flex-wrap justify-center gap-3">
-            <a href="#discover" className="inline-flex items-center gap-2 rounded-full bg-card px-7 py-4 font-semibold text-primary transition-transform duration-500 hover:-translate-y-0.5">{t.explore} <ArrowRight className="h-4 w-4" /></a>
+            <a href="#download" className="inline-flex items-center gap-2 rounded-full bg-card px-7 py-4 font-semibold text-primary transition-transform duration-500 hover:-translate-y-0.5">{t.explore} <ArrowRight className="h-4 w-4" /></a>
             <a href="#home" className="glass-dark inline-flex rounded-full px-7 py-4 font-semibold">{t.getStarted}</a>
           </div>
         </div>
