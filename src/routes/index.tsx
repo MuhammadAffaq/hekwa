@@ -313,18 +313,20 @@ function Screen({ progress, index, children }: { progress: MotionValue<number>; 
   const s = index * step;
   const e = s + step;
   const first = index === 0, last = index === 4;
-  const opacity = useTransform(progress, [s - 0.06, s + 0.02, e - 0.04, e + 0.04], [first ? 1 : 0, 1, 1, last ? 1 : 0]);
-  const y = useTransform(progress, [s - 0.06, s + 0.02, e - 0.04, e + 0.04], [first ? 0 : 60, 0, 0, last ? 0 : -60]);
-  const scale = useTransform(progress, [s - 0.06, s + 0.02, e - 0.04, e + 0.04], [first ? 1 : 0.94, 1, 1, last ? 1 : 1.04]);
-  const blur = useTransform(progress, [s - 0.06, s + 0.02, e - 0.04, e + 0.04], [first ? 0 : 8, 0, 0, last ? 0 : 8]);
+  const r = first ? [0, 0.01, e - 0.04, e + 0.04] : last ? [s - 0.06, s + 0.02, 0.99, 1] : [s - 0.06, s + 0.02, e - 0.04, e + 0.04];
+  const opacity = useTransform(progress, r, [first ? 1 : 0, 1, 1, last ? 1 : 0]);
+  const y = useTransform(progress, r, [first ? 0 : 60, 0, 0, last ? 0 : -60]);
+  const scale = useTransform(progress, r, [first ? 1 : 0.94, 1, 1, last ? 1 : 1.04]);
+  const blur = useTransform(progress, r, [first ? 0 : 8, 0, 0, last ? 0 : 8]);
   const filter = useTransform(blur, (b) => `blur(${b}px)`);
   return <motion.div style={{ opacity, y, scale, filter }} className="absolute inset-0 p-4 pt-12">{children}</motion.div>;
 }
 
 function StageText({ progress, index, k, title, desc }: { progress: MotionValue<number>; index: number; k: string; title: string; desc: string }) {
   const s = index / 5, e = s + 0.2;
-  const opacity = useTransform(progress, [s - 0.04, s + 0.03, e - 0.04, e + 0.02], [index === 0 ? 1 : 0, 1, 1, index === 4 ? 1 : 0]);
-  const y = useTransform(progress, [s - 0.04, s + 0.03, e - 0.04, e + 0.02], [index === 0 ? 0 : 30, 0, 0, index === 4 ? 0 : -30]);
+  const r = index === 0 ? [0, 0.01, e - 0.04, e + 0.02] : index === 4 ? [s - 0.04, s + 0.03, 0.99, 1] : [s - 0.04, s + 0.03, e - 0.04, e + 0.02];
+  const opacity = useTransform(progress, r, [index === 0 ? 1 : 0, 1, 1, index === 4 ? 1 : 0]);
+  const y = useTransform(progress, r, [index === 0 ? 0 : 30, 0, 0, index === 4 ? 0 : -30]);
   return (
     <motion.div style={{ opacity, y }} className="absolute inset-x-0 top-0">
       <p className="text-sm font-semibold tracking-[0.2em] text-primary">0{index + 1} — {k.toUpperCase()}</p>
@@ -395,7 +397,7 @@ function AppShowcase() {
                   </Screen>
                   {/* Explore */}
                   <Screen progress={scrollYProgress} index={1}>
-                    <p className="text-lg font-semibold">{t.stages[1].k}</p>
+                    <p className="text-lg font-semibold">{t.stages[1]!.k}</p>
                     <div className="relative mt-3 aspect-[4/3] overflow-hidden rounded-2xl">
                       <img src={heroImg} alt="" className="h-full w-full object-cover" loading="lazy" />
                       <div className="glass absolute inset-x-2 bottom-2 rounded-xl p-2">
@@ -425,7 +427,7 @@ function AppShowcase() {
                   <Screen progress={scrollYProgress} index={3}>
                     <p className="flex items-center gap-2 text-lg font-semibold"><Heart className="h-5 w-5 fill-primary text-primary" />{t.favorites}</p>
                     <div className="mt-4 space-y-2">
-                      {[...properties, properties[0]].map((p, i) => <MiniCard key={i} img={p.img} title={p.title} price={p.price} loc={p.loc} />)}
+                      {[...properties, properties[0]!].map((p, i) => <MiniCard key={i} img={p.img} title={p.title} price={p.price} loc={p.loc} />)}
                     </div>
                   </Screen>
                   {/* Decide */}
@@ -465,7 +467,7 @@ function Fit() {
           <h2 className={h2}>{t.fitTitle}</h2>
           <div className="mt-10 grid grid-cols-2 gap-3">
             {t.cats.map((c, i) => {
-              const I = icons[i];
+              const I = icons[i]!;
               return (
                 <a key={c} href="#discover" className="group flex items-center gap-3 rounded-2xl border border-border bg-card p-4 transition-all duration-500 hover:-translate-y-1 hover:border-primary hover:shadow-soft">
                   <span className="grid h-10 w-10 place-items-center rounded-xl bg-primary-soft text-primary transition-colors group-hover:bg-primary group-hover:text-primary-foreground"><I className="h-5 w-5" /></span>
@@ -566,7 +568,7 @@ function Why() {
         </Reveal>
         <div className="mt-16 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
           {t.why.map((w, i) => {
-            const I = icons[i];
+            const I = icons[i]!;
             return (
               <Reveal key={w.k} delay={i * 0.1}>
                 <div className="h-full rounded-3xl border border-border bg-card p-7 transition-all duration-500 hover:-translate-y-1 hover:shadow-soft">
