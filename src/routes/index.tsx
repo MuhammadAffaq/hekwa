@@ -313,18 +313,20 @@ function Screen({ progress, index, children }: { progress: MotionValue<number>; 
   const s = index * step;
   const e = s + step;
   const first = index === 0, last = index === 4;
-  const opacity = useTransform(progress, [s - 0.06, s + 0.02, e - 0.04, e + 0.04], [first ? 1 : 0, 1, 1, last ? 1 : 0]);
-  const y = useTransform(progress, [s - 0.06, s + 0.02, e - 0.04, e + 0.04], [first ? 0 : 60, 0, 0, last ? 0 : -60]);
-  const scale = useTransform(progress, [s - 0.06, s + 0.02, e - 0.04, e + 0.04], [first ? 1 : 0.94, 1, 1, last ? 1 : 1.04]);
-  const blur = useTransform(progress, [s - 0.06, s + 0.02, e - 0.04, e + 0.04], [first ? 0 : 8, 0, 0, last ? 0 : 8]);
+  const r = first ? [0, 0.01, e - 0.04, e + 0.04] : last ? [s - 0.06, s + 0.02, 0.99, 1] : [s - 0.06, s + 0.02, e - 0.04, e + 0.04];
+  const opacity = useTransform(progress, r, [first ? 1 : 0, 1, 1, last ? 1 : 0]);
+  const y = useTransform(progress, r, [first ? 0 : 60, 0, 0, last ? 0 : -60]);
+  const scale = useTransform(progress, r, [first ? 1 : 0.94, 1, 1, last ? 1 : 1.04]);
+  const blur = useTransform(progress, r, [first ? 0 : 8, 0, 0, last ? 0 : 8]);
   const filter = useTransform(blur, (b) => `blur(${b}px)`);
   return <motion.div style={{ opacity, y, scale, filter }} className="absolute inset-0 p-4 pt-12">{children}</motion.div>;
 }
 
 function StageText({ progress, index, k, title, desc }: { progress: MotionValue<number>; index: number; k: string; title: string; desc: string }) {
   const s = index / 5, e = s + 0.2;
-  const opacity = useTransform(progress, [s - 0.04, s + 0.03, e - 0.04, e + 0.02], [index === 0 ? 1 : 0, 1, 1, index === 4 ? 1 : 0]);
-  const y = useTransform(progress, [s - 0.04, s + 0.03, e - 0.04, e + 0.02], [index === 0 ? 0 : 30, 0, 0, index === 4 ? 0 : -30]);
+  const r = index === 0 ? [0, 0.01, e - 0.04, e + 0.02] : index === 4 ? [s - 0.04, s + 0.03, 0.99, 1] : [s - 0.04, s + 0.03, e - 0.04, e + 0.02];
+  const opacity = useTransform(progress, r, [index === 0 ? 1 : 0, 1, 1, index === 4 ? 1 : 0]);
+  const y = useTransform(progress, r, [index === 0 ? 0 : 30, 0, 0, index === 4 ? 0 : -30]);
   return (
     <motion.div style={{ opacity, y }} className="absolute inset-x-0 top-0">
       <p className="text-sm font-semibold tracking-[0.2em] text-primary">0{index + 1} — {k.toUpperCase()}</p>
