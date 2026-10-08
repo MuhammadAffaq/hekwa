@@ -32,7 +32,7 @@ export const Route = createFileRoute("/")({
 
 const ease = [0.22, 1, 0.36, 1] as const;
 
-const _unused = [
+const properties = [
   { img: heroImg, type: "villa" as const, title: "Modern Villa", loc: "Lahore, Pakistan", price: "PKR 45,000,000", beds: 3, baths: 4, area: "4,500 sqft" },
   { img: interiorImg, type: "apartment" as const, title: "Skyline Apartment", loc: "Karachi, Pakistan", price: "PKR 28,500,000", beds: 2, baths: 2, area: "1,850 sqft" },
   { img: homeImg, type: "home" as const, title: "Garden Family Home", loc: "Islamabad, Pakistan", price: "PKR 36,000,000", beds: 4, baths: 3, area: "3,200 sqft" },
