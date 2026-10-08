@@ -313,20 +313,22 @@ function Screen({ progress, index, children }: { progress: MotionValue<number>; 
   const s = index * step;
   const e = s + step;
   const first = index === 0, last = index === 4;
+  const p = useTransform(progress, (v) => Math.min(1, Math.max(0, v)));
   const r = first ? [0, 0.01, e - 0.04, e + 0.04] : last ? [s - 0.06, s + 0.02, 0.99, 1] : [s - 0.06, s + 0.02, e - 0.04, e + 0.04];
-  const opacity = useTransform(progress, r, [first ? 1 : 0, 1, 1, last ? 1 : 0]);
-  const y = useTransform(progress, r, [first ? 0 : 60, 0, 0, last ? 0 : -60]);
-  const scale = useTransform(progress, r, [first ? 1 : 0.94, 1, 1, last ? 1 : 1.04]);
-  const blur = useTransform(progress, r, [first ? 0 : 8, 0, 0, last ? 0 : 8]);
+  const opacity = useTransform(p, r, [first ? 1 : 0, 1, 1, last ? 1 : 0]);
+  const y = useTransform(p, r, [first ? 0 : 60, 0, 0, last ? 0 : -60]);
+  const scale = useTransform(p, r, [first ? 1 : 0.94, 1, 1, last ? 1 : 1.04]);
+  const blur = useTransform(p, r, [first ? 0 : 8, 0, 0, last ? 0 : 8]);
   const filter = useTransform(blur, (b) => `blur(${b}px)`);
   return <motion.div style={{ opacity, y, scale, filter }} className="absolute inset-0 p-4 pt-12">{children}</motion.div>;
 }
 
 function StageText({ progress, index, k, title, desc }: { progress: MotionValue<number>; index: number; k: string; title: string; desc: string }) {
   const s = index / 5, e = s + 0.2;
+  const p = useTransform(progress, (v) => Math.min(1, Math.max(0, v)));
   const r = index === 0 ? [0, 0.01, e - 0.04, e + 0.02] : index === 4 ? [s - 0.04, s + 0.03, 0.99, 1] : [s - 0.04, s + 0.03, e - 0.04, e + 0.02];
-  const opacity = useTransform(progress, r, [index === 0 ? 1 : 0, 1, 1, index === 4 ? 1 : 0]);
-  const y = useTransform(progress, r, [index === 0 ? 0 : 30, 0, 0, index === 4 ? 0 : -30]);
+  const opacity = useTransform(p, r, [index === 0 ? 1 : 0, 1, 1, index === 4 ? 1 : 0]);
+  const y = useTransform(p, r, [index === 0 ? 0 : 30, 0, 0, index === 4 ? 0 : -30]);
   return (
     <motion.div style={{ opacity, y }} className="absolute inset-x-0 top-0">
       <p className="text-sm font-semibold tracking-[0.2em] text-primary">0{index + 1} — {k.toUpperCase()}</p>
@@ -592,7 +594,7 @@ function Cinematic() {
   const { scrollYProgress } = useScroll({ target: ref, offset: ["start end", "end start"] });
   const scale = useTransform(scrollYProgress, [0, 1], [1.2, 1]);
   const y = useTransform(scrollYProgress, [0, 1], [80, -60]);
-  const overlay = useTransform(scrollYProgress, [0, 0.5, 1], [0.3, 0.55, 0.7]);
+  const overlay = useTransform(useTransform(scrollYProgress, (v) => Math.min(1, Math.max(0, v))), [0, 0.5, 1], [0.3, 0.55, 0.7]);
   return (
     <section ref={ref} className="relative h-[90vh] min-h-[600px] overflow-hidden">
       <motion.img style={{ scale }} src={cineImg} alt="Glass hillside residence at dusk above city lights" loading="lazy" width={1920} height={1088} className="absolute inset-0 h-full w-full object-cover" />
