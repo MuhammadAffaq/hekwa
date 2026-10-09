@@ -333,19 +333,7 @@ function AppShowcase() {
                 <div className="relative h-full overflow-hidden rounded-[2.2rem]">
                   {/* Search */}
                   <Screen progress={scrollYProgress} index={0}>
-                    <Logo className="mx-auto h-16" />
-                    <div className="mt-4 flex items-center gap-2 rounded-2xl bg-card px-3 py-3 shadow-soft">
-                      <Search className="h-4 w-4 text-primary" /><span className="text-xs text-muted-foreground">{t.searchPh}</span>
-                      <SlidersHorizontal className="ml-auto h-4 w-4 text-muted-foreground" />
-                    </div>
-                    <div className="mt-4 flex flex-wrap gap-2">
-                      {t.filters.map((f, i) => <span key={f} className={`rounded-full px-3 py-1.5 text-[11px] font-semibold ${i === 0 ? "bg-primary text-primary-foreground" : "bg-muted text-muted-foreground"}`}>{f}</span>)}
-                    </div>
-                    <div className="mt-5 space-y-2">
-                      {["Lahore", "Islamabad", "Karachi"].map((c) => (
-                        <div key={c} className="flex items-center gap-2 rounded-xl bg-muted/70 px-3 py-2.5 text-xs"><MapPin className="h-3.5 w-3.5 text-primary" />{c}, Pakistan</div>
-                      ))}
-                    </div>
+                    <img src={appHome.url} alt="HEKWA app home screen" className="absolute inset-0 h-full w-full object-cover object-top" loading="lazy" />
                   </Screen>
                   {/* Explore */}
                   <Screen progress={scrollYProgress} index={1}>
