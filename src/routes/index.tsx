@@ -7,6 +7,7 @@ import {
 } from "lucide-react";
 import { LangProvider, useLang, type Lang } from "@/lib/i18n";
 import logo from "@/assets/hekwa-logo.png.asset.json";
+import appHome from "@/assets/app-home.jpg.asset.json";
 import heroImg from "@/assets/hero-villa.jpg";
 import interiorImg from "@/assets/interior.jpg";
 import homeImg from "@/assets/home.jpg";
